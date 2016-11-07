@@ -1,0 +1,14 @@
+{
+  "manifest_version":  1,
+  "name": "mojo:librealsense",
+  "process-group": "browser",
+  "display_name": "LibRealsense Service",
+  "capabilities": {
+    "provided": {
+      "all_interfaces": [ "*" ]
+    },
+    "required": {
+      "*": { "classes": [ "app" ] }
+    }
+  }
+}

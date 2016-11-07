@@ -1,0 +1,38 @@
+# Copyright (c) 2016 Intel Corporation. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//librs_mojo/librs_mojo_options.gni")
+import("//services/shell/public/cpp/service.gni")
+import("//services/shell/public/service_manifest.gni")
+
+component("librealsense_service") {
+  sources = [
+    "librs_mojo_service.cc",
+    "librs_mojo_service.h",
+    "librs_mojo_service_factory.cc",
+    "librs_mojo_service_factory.h",
+    "librs_mojo_services_export.h",
+  ]
+
+  defines = [ "LIBRS_MOJO_SERVICES_IMPLEMENTATION" ]
+
+  configs += [ "//build/config/compiler:no_size_t_to_int_warning" ]
+  public_configs = [ "//librs_mojo:librs_mojo_config" ]
+
+  public_deps = [
+    "//librs_mojo/interfaces",
+    "//mojo/public/cpp/bindings",
+    "//mojo/public/cpp/system",
+    "//services/shell/public/cpp",
+  ]
+
+  deps = [
+    "//base",
+  ]
+}
+
+service_manifest("librealsense_manifest") {
+  name = "librealsense"
+  source = "librs_mojo_manifest.json"
+}

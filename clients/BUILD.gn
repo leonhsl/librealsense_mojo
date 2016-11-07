@@ -1,0 +1,33 @@
+# Copyright (c) 2016 Intel Corporation. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//librs_mojo/librs_mojo_options.gni")
+
+component("librealsense_client") {
+  sources = [
+    "init.cc",
+    "init.h",
+    "lib/librs_mojo_context.cc",
+    "lib/librs_mojo_context.h",
+    "librs_mojo_clients_export.h",
+  ]
+
+  defines = [ "LIBRS_MOJO_CLIENTS_IMPLEMENTATION" ]
+  public_configs = [ "//librs_mojo:librs_mojo_config" ]
+
+  public_deps = [
+    "//librs_mojo/interfaces",
+    "//mojo/public/c/system",
+    "//mojo/public/cpp/bindings",
+    "//mojo/public/cpp/system",
+    "//services/shell/public/cpp",
+  ]
+
+  deps = [
+    "//base",
+
+    # Need to set thunks impl into wrapper library.
+    "//librs_mojo/wrapper:librealsense_wrapper",
+  ]
+}
