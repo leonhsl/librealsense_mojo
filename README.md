@@ -25,4 +25,8 @@ Definitions of mojom interfaces.
 * librealsense_wrapper is initialized by librealsense_client.
 * librealsense_wrapper exports APIs somehow equivalent with librealsense, but implements these APIs by requesting librealsense_client.
 * Original users(WebRTC and librealsense worker library) of librealsense can link/consume librealsense_wrapper now instead.
+```
+  auto rs_context = base::MakeUnique<librs::wrapper::Context>();
+  DLOG(INFO) << "GetDeviceCount returned: " << rs_context->GetDeviceCount();
+```
 * Can run on multiple threads at the same time.
