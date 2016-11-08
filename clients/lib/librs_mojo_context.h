@@ -7,13 +7,15 @@
 
 #include <functional>
 #include <memory>
+#include <set>
 
 #include "base/macros.h"
+#include "base/memory/weak_ptr.h"
 #include "base/threading/thread_checker.h"
 #include "librs_mojo/interfaces/librealsense.mojom.h"
 
 namespace base {
-class MessageLoop;
+class WaitableEvent;
 }
 
 namespace shell {
@@ -33,15 +35,28 @@ class Context final {
   // Set the global service manager connector per process.
   static void SetConnector(shell::Connector* connector);
 
-  void GetDeviceCount(std::function<void(uint32_t)> callback);
+  int GetDeviceCount();
 
  private:
+  void ConnectOnConnectorThread();
+
+  void OnContextConnectionError();
+
+  void GetDeviceCountOnConnectorThread(base::WaitableEvent* done_event,
+                                       int* out_count);
+
+  void GetDeviceCountCallback(base::WaitableEvent* done_event,
+                              int* out_count,
+                              int count);
+
+  // Bind/access on connector thread.
   mojom::ContextPtr context_;
 
-  // Create one if current thread has no message loop.
-  std::unique_ptr<base::MessageLoop> message_loop_;
+  std::set<base::WaitableEvent*> pending_waitable_events_;
 
   base::ThreadChecker thread_checker_;
+
+  base::WeakPtrFactory<Context> weak_factory_;
 
   DISALLOW_COPY_AND_ASSIGN(Context);
 };

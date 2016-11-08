@@ -19,7 +19,7 @@ struct LibraryThunks {
   size_t size;  // Should be set to sizeof(LibraryThunks).
   void* (*CreateContext)();
   void (*DeleteContext)(void* context);
-  void (*GetDeviceCount)(void* context, std::function<void(uint32_t)> callback);
+  int (*GetDeviceCount)(void* context);
 };
 #pragma pack(pop)
 

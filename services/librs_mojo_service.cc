@@ -53,7 +53,8 @@ void MojoLibRealsenseService::GetDeviceCount(
   DLOG(INFO) << "LibRealsenseService: "
                 "MojoLibRealsenseService::GetDeviceCount() called on thread: "
              << base::PlatformThread::CurrentId();
-  static uint32_t count = 0;
+  // TODO(leonhsl): Get real count from librealsense.
+  static int count = 0;
   callback.Run(++count);
 }
 

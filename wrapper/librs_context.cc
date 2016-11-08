@@ -21,8 +21,8 @@ Context::~Context() {
   DeleteContextThunk(handle_);
 }
 
-void Context::GetDeviceCount(std::function<void(uint32_t)> callback) {
-  GetDeviceCountThunk(handle_, callback);
+int Context::GetDeviceCount() {
+  return GetDeviceCountThunk(handle_);
 }
 
 }  // namespace wrapper

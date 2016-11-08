@@ -5,5 +5,5 @@
 module librs.mojom;
 
 interface Context {
-  GetDeviceCount() => (uint32 count);
+  GetDeviceCount() => (int32 count);
 };

@@ -28,13 +28,12 @@ void* CreateContextThunk() {
 
 void DeleteContextThunk(void* context) {
   assert(g_thunks.DeleteContext);
-  return g_thunks.DeleteContext(context);
+  g_thunks.DeleteContext(context);
 }
 
-void GetDeviceCountThunk(void* context,
-                         std::function<void(uint32_t)> callback) {
+int GetDeviceCountThunk(void* context) {
   assert(g_thunks.GetDeviceCount);
-  return g_thunks.GetDeviceCount(context, callback);
+  return g_thunks.GetDeviceCount(context);
 }
 
 }  // namespace wrapper

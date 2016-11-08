@@ -24,8 +24,8 @@ void DeleteContextImpl(void* context) {
   delete static_cast<Context*>(context);
 }
 
-void GetDeviceCountImpl(void* context, std::function<void(uint32_t)> callback) {
-  return static_cast<Context*>(context)->GetDeviceCount(callback);
+int GetDeviceCountImpl(void* context) {
+  return static_cast<Context*>(context)->GetDeviceCount();
 }
 
 }  // namespace

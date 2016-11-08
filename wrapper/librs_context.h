@@ -21,7 +21,7 @@ class LIBRS_MOJO_WRAPPER_EXPORT Context {
 
   ~Context();
 
-  void GetDeviceCount(std::function<void(uint32_t)> callback);
+  int GetDeviceCount();
 
  private:
   using Handle = void*;

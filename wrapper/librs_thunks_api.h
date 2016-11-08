@@ -15,7 +15,7 @@ void* CreateContextThunk();
 
 void DeleteContextThunk(void* context);
 
-void GetDeviceCountThunk(void* context, std::function<void(uint32_t)> callback);
+int GetDeviceCountThunk(void* context);
 
 }  // namespace wrapper
 }  // namespace librs
