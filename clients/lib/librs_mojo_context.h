@@ -5,18 +5,9 @@
 #ifndef LIBRS_MOJO_CLIENTS_LIB_LIBRS_MOJO_CONTEXT_H_
 #define LIBRS_MOJO_CLIENTS_LIB_LIBRS_MOJO_CONTEXT_H_
 
-#include <functional>
-#include <memory>
-#include <set>
-
 #include "base/macros.h"
-#include "base/memory/weak_ptr.h"
+#include "base/memory/ref_counted.h"
 #include "base/threading/thread_checker.h"
-#include "librs_mojo/interfaces/librealsense.mojom.h"
-
-namespace base {
-class WaitableEvent;
-}
 
 namespace shell {
 class Connector;
@@ -38,25 +29,11 @@ class Context final {
   int GetDeviceCount();
 
  private:
-  void ConnectOnConnectorThread();
-
-  void OnContextConnectionError();
-
-  void GetDeviceCountOnConnectorThread(base::WaitableEvent* done_event,
-                                       int* out_count);
-
-  void GetDeviceCountCallback(base::WaitableEvent* done_event,
-                              int* out_count,
-                              int count);
-
-  // Bind/access on connector thread.
-  mojom::ContextPtr context_;
-
-  std::set<base::WaitableEvent*> pending_waitable_events_;
+  class ConnectorThreadContext;
 
   base::ThreadChecker thread_checker_;
 
-  base::WeakPtrFactory<Context> weak_factory_;
+  scoped_refptr<ConnectorThreadContext> context_;
 
   DISALLOW_COPY_AND_ASSIGN(Context);
 };
