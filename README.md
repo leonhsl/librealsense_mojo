@@ -28,5 +28,8 @@ Definitions of mojom interfaces.
 ```
   auto rs_context = base::MakeUnique<librs::wrapper::Context>();
   DLOG(INFO) << "GetDeviceCount returned: " << rs_context->GetDeviceCount();
+  
+  auto rs_device = rs_context->GetDevice(0);
+  DLOG(INFO) << "Device No.0 GetName returned: " << rs_device->GetName();
 ```
 * Can run on multiple threads at the same time. But is forbidden to running on thread of the connector got by librs::client::Init(), usually such thread would be browser UI thread or render main thread.
