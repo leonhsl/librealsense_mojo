@@ -18,11 +18,27 @@ Context::Context() {
 }
 
 Context::~Context() {
+  for (auto& iter : devices_)
+    delete iter.second;
+
   DeleteContextThunk(handle_);
 }
 
 int Context::GetDeviceCount() {
-  return GetDeviceCountThunk(handle_);
+  return ContextGetDeviceCountThunk(handle_);
+}
+
+Device* Context::GetDevice(int index) {
+  Device* device = nullptr;
+
+  void* device_handle = ContextGetDeviceThunk(handle_, index);
+  if (device_handle)
+    device = new Device(device_handle);
+
+  if (devices_.find(index) != devices_.end())
+    delete devices_[index];
+  devices_[index] = device;
+  return device;
 }
 
 }  // namespace wrapper

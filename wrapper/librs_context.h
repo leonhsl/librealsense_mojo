@@ -5,10 +5,13 @@
 #ifndef LIBRS_MOJO_WRAPPER_LIBRS_CONTEXT_H_
 #define LIBRS_MOJO_WRAPPER_LIBRS_CONTEXT_H_
 
-#include "librs_mojo/wrapper/librs_wrapper_export.h"
+#include <map>
+#include <memory>
 
-#include <functional>
 #include <stdint.h>
+
+#include "librs_mojo/wrapper/librs_device.h"
+#include "librs_mojo/wrapper/librs_wrapper_export.h"
 
 namespace librs {
 namespace wrapper {
@@ -23,9 +26,14 @@ class LIBRS_MOJO_WRAPPER_EXPORT Context {
 
   int GetDeviceCount();
 
+  Device* GetDevice(int index);
+
  private:
   using Handle = void*;
   Handle handle_ = nullptr;
+
+  // Owns all Device objects.
+  std::map<int, Device*> devices_;
 };
 
 }  // namespace wrapper

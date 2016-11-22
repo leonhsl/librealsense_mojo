@@ -5,8 +5,10 @@
 #include "librs_mojo/clients/init.h"
 
 #include <functional>
+#include <string>
 
 #include "librs_mojo/clients/lib/librs_mojo_context.h"
+#include "librs_mojo/clients/lib/librs_mojo_device.h"
 #include "librs_mojo/wrapper/librs_thunks.h"
 
 namespace librs {
@@ -24,8 +26,24 @@ void DeleteContextImpl(void* context) {
   delete static_cast<Context*>(context);
 }
 
-int GetDeviceCountImpl(void* context) {
+int ContextGetDeviceCountImpl(void* context) {
   return static_cast<Context*>(context)->GetDeviceCount();
+}
+
+void* ContextGetDeviceImpl(void* context, int index) {
+  return static_cast<Context*>(context)->GetDevice(index);
+}
+
+void DeleteDeviceImpl(void* device) {
+  delete static_cast<Device*>(device);
+}
+
+const char* DeviceGetNameImpl(void* device) {
+  const std::string* name = static_cast<Device*>(device)->GetName();
+  if (name)
+    return name->c_str();
+
+  return nullptr;
 }
 
 }  // namespace
@@ -38,8 +56,12 @@ void Init(shell::Connector* connector) {
   // Set thunks implementation into wrapper library to enable it to do actual
   // work.
   librs::wrapper::LibraryThunks thunks = {sizeof(librs::wrapper::LibraryThunks),
-                                          CreateContextImpl, DeleteContextImpl,
-                                          GetDeviceCountImpl};
+                                          CreateContextImpl,
+                                          DeleteContextImpl,
+                                          ContextGetDeviceCountImpl,
+                                          ContextGetDeviceImpl,
+                                          DeleteDeviceImpl,
+                                          DeviceGetNameImpl};
   librs::wrapper::SetThunks(&thunks);
 }
 

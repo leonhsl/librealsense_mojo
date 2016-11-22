@@ -10,6 +10,7 @@
 #include "base/bind.h"
 #include "base/synchronization/waitable_event.h"
 #include "base/threading/thread_task_runner_handle.h"
+#include "librs_mojo/clients/lib/librs_mojo_device.h"
 #include "librs_mojo/interfaces/librealsense.mojom.h"
 #include "services/shell/public/cpp/connector.h"
 
@@ -34,18 +35,14 @@ class Context::ConnectorThreadContext
     : public base::RefCountedThreadSafe<ConnectorThreadContext> {
  public:
   ConnectorThreadContext() {
-    DLOG(INFO)
-        << "Client Context::ConnectorThreadContext constructor on thread: "
-        << base::PlatformThread::CurrentId();
+    DLOG(INFO) << "Client Context::ConnectorThreadContext constructor";
     // This will be reattached by any of the connector thread functions on first
     // call.
     connector_thread_checker_.DetachFromThread();
   }
 
   void Connect() {
-    DLOG(INFO) << "Client Context::ConnectorThreadContext::Connect() called on "
-                  "thread: "
-               << base::PlatformThread::CurrentId();
+    DLOG(INFO) << "Client Context::ConnectorThreadContext::Connect() called";
     DCHECK(connector_thread_checker_.CalledOnValidThread());
     DCHECK(!context_);
 
@@ -57,9 +54,7 @@ class Context::ConnectorThreadContext
   }
 
   void Close() {
-    DLOG(INFO)
-        << "Client Context::ConnectorThreadContext::Close() called on thread: "
-        << base::PlatformThread::CurrentId();
+    DLOG(INFO) << "Client Context::ConnectorThreadContext::Close() called";
     DCHECK(connector_thread_checker_.CalledOnValidThread());
     // This will disconnect message pipe, to release reference ptr held by
     // connection error handler.
@@ -67,9 +62,8 @@ class Context::ConnectorThreadContext
   }
 
   void GetDeviceCount(base::WaitableEvent* done_event, int* out_count) {
-    DLOG(INFO) << "Client Context::ConnectorThreadContext::GetDeviceCount() "
-                  "called on thread: "
-               << base::PlatformThread::CurrentId();
+    DLOG(INFO)
+        << "Client Context::ConnectorThreadContext::GetDeviceCount() called";
     DCHECK(connector_thread_checker_.CalledOnValidThread());
     DCHECK(context_);
 
@@ -85,14 +79,20 @@ class Context::ConnectorThreadContext
                    done_event, out_count));
   }
 
+  void GetDevice(int index, mojom::DeviceRequest request) {
+    DLOG(INFO) << "Client Context::ConnectorThreadContext::GetDevice() called";
+    DCHECK(connector_thread_checker_.CalledOnValidThread());
+    DCHECK(context_);
+
+    context_->GetDevice(index, std::move(request));
+  }
+
  private:
   friend class base::RefCountedThreadSafe<ConnectorThreadContext>;
 
   ~ConnectorThreadContext() {
     // Be possible to happen on connector thread or user thread.
-    DLOG(INFO)
-        << "Client Context::ConnectorThreadContext destructor on thread: "
-        << base::PlatformThread::CurrentId();
+    DLOG(INFO) << "Client Context::ConnectorThreadContext destructor";
   }
 
   void OnContextConnectionError() {
@@ -136,8 +136,7 @@ void Context::SetConnector(shell::Connector* connector) {
 }
 
 Context::Context() {
-  DLOG(INFO) << "Client Context constructor on thread: "
-             << base::PlatformThread::CurrentId();
+  DLOG(INFO) << "Client Context constructor";
   DCHECK(g_connector_for_process);
   DCHECK(g_connector_task_runner);
   // librealsense_wrapper is never expected to run on browser main thread or
@@ -153,8 +152,7 @@ Context::Context() {
 
 Context::~Context() {
   DCHECK(thread_checker_.CalledOnValidThread());
-  DLOG(INFO) << "Client Context destructor on thread: "
-             << base::PlatformThread::CurrentId();
+  DLOG(INFO) << "Client Context destructor";
   g_connector_task_runner->PostTask(
       FROM_HERE,
       base::Bind(&Context::ConnectorThreadContext::Close, context_.get()));
@@ -162,8 +160,7 @@ Context::~Context() {
 
 int Context::GetDeviceCount() {
   DCHECK(thread_checker_.CalledOnValidThread());
-  DLOG(INFO) << "Client Context::GetDeviceCount() called on thread: "
-             << base::PlatformThread::CurrentId();
+  DLOG(INFO) << "Client Context::GetDeviceCount() called";
 
   int count = -1;
   base::WaitableEvent done_event(
@@ -176,6 +173,19 @@ int Context::GetDeviceCount() {
   done_event.Wait();
 
   return count;
+}
+
+Device* Context::GetDevice(int index) {
+  DCHECK(thread_checker_.CalledOnValidThread());
+  DLOG(INFO) << "Client Context::GetDevice() called";
+
+  mojom::DevicePtr device;
+  // Get mojom::Device interface on connector thread.
+  g_connector_task_runner->PostTask(
+      FROM_HERE,
+      base::Bind(&Context::ConnectorThreadContext::GetDevice, context_.get(),
+                 index, base::Passed(mojo::GetProxy(&device))));
+  return new Device(std::move(device), g_connector_task_runner);
 }
 
 }  // namespace client

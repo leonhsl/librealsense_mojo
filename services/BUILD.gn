@@ -8,6 +8,10 @@ import("//services/shell/public/service_manifest.gni")
 
 component("librealsense_service") {
   sources = [
+    "librs_mojo_context_impl.cc",
+    "librs_mojo_context_impl.h",
+    "librs_mojo_device_impl.cc",
+    "librs_mojo_device_impl.h",
     "librs_mojo_service.cc",
     "librs_mojo_service.h",
     "librs_mojo_service_factory.cc",

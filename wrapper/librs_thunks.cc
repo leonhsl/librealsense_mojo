@@ -31,9 +31,24 @@ void DeleteContextThunk(void* context) {
   g_thunks.DeleteContext(context);
 }
 
-int GetDeviceCountThunk(void* context) {
-  assert(g_thunks.GetDeviceCount);
-  return g_thunks.GetDeviceCount(context);
+int ContextGetDeviceCountThunk(void* context) {
+  assert(g_thunks.ContextGetDeviceCount);
+  return g_thunks.ContextGetDeviceCount(context);
+}
+
+void* ContextGetDeviceThunk(void* context, int index) {
+  assert(g_thunks.ContextGetDevice);
+  return g_thunks.ContextGetDevice(context, index);
+}
+
+void DeleteDeviceThunk(void* device) {
+  assert(g_thunks.DeleteDevice);
+  g_thunks.DeleteDevice(device);
+}
+
+const char* DeviceGetNameThunk(void* device) {
+  assert(g_thunks.DeviceGetName);
+  return g_thunks.DeviceGetName(device);
 }
 
 }  // namespace wrapper

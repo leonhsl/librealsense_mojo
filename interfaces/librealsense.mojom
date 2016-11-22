@@ -6,4 +6,9 @@ module librs.mojom;
 
 interface Context {
   GetDeviceCount() => (int32 count);
+  GetDevice(int32 index, Device& device);
+};
+
+interface Device {
+  GetName() => (string name);
 };

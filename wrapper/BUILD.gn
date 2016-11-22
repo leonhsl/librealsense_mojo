@@ -8,6 +8,8 @@ shared_library("librealsense_wrapper") {
   sources = [
     "librs_context.cc",
     "librs_context.h",
+    "librs_device.cc",
+    "librs_device.h",
     "librs_thunks.cc",
     "librs_thunks.h",
     "librs_thunks_api.h",

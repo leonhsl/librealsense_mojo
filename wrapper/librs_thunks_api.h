@@ -15,7 +15,13 @@ void* CreateContextThunk();
 
 void DeleteContextThunk(void* context);
 
-int GetDeviceCountThunk(void* context);
+int ContextGetDeviceCountThunk(void* context);
+
+void* ContextGetDeviceThunk(void* context, int index);
+
+void DeleteDeviceThunk(void* device);
+
+const char* DeviceGetNameThunk(void* device);
 
 }  // namespace wrapper
 }  // namespace librs

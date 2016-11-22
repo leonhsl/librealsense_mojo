@@ -10,6 +10,8 @@ component("librealsense_client") {
     "init.h",
     "lib/librs_mojo_context.cc",
     "lib/librs_mojo_context.h",
+    "lib/librs_mojo_device.cc",
+    "lib/librs_mojo_device.h",
     "librs_mojo_clients_export.h",
   ]
 

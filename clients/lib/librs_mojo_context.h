@@ -16,8 +16,9 @@ class Connector;
 namespace librs {
 namespace client {
 
-// Holds a mojo connection to librs.mojom.Context interface inside librealsense
-// mojo service, must be created/accessed on the same thread.
+class Device;
+
+// Must be created/accessed on the same thread.
 class Context final {
  public:
   Context();
@@ -28,12 +29,14 @@ class Context final {
 
   int GetDeviceCount();
 
+  Device* GetDevice(int index);
+
  private:
   class ConnectorThreadContext;
 
-  base::ThreadChecker thread_checker_;
-
   scoped_refptr<ConnectorThreadContext> context_;
+
+  base::ThreadChecker thread_checker_;
 
   DISALLOW_COPY_AND_ASSIGN(Context);
 };
