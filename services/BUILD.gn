@@ -24,6 +24,9 @@ component("librealsense_service") {
   configs += [ "//build/config/compiler:no_size_t_to_int_warning" ]
   public_configs = [ "//librs_mojo:librs_mojo_config" ]
 
+  include_dirs = [ "/usr/local/include" ]
+  libs = [ "realsense" ]
+
   public_deps = [
     "//librs_mojo/interfaces",
     "//mojo/public/cpp/bindings",

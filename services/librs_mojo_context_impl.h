@@ -13,6 +13,10 @@
 #include "mojo/public/cpp/bindings/strong_binding.h"
 #include "services/shell/public/cpp/service_context_ref.h"
 
+namespace rs {
+class context;
+}
+
 namespace librs {
 
 class ContextImpl : public mojom::Context {
@@ -25,6 +29,8 @@ class ContextImpl : public mojom::Context {
   // mojom::Context:
   void GetDeviceCount(const GetDeviceCountCallback& callback) override;
   void GetDevice(int index, mojom::DeviceRequest request) override;
+
+  std::unique_ptr<rs::context> rs_context_;
 
   mojo::StrongBinding<mojom::Context> binding_;
 

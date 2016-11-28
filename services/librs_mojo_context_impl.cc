@@ -4,6 +4,8 @@
 
 #include "librs_mojo/services/librs_mojo_context_impl.h"
 
+#include <librealsense/rs.hpp>  // NOLINT
+
 #include "librs_mojo/services/librs_mojo_device_impl.h"
 
 namespace librs {
@@ -12,7 +14,9 @@ ContextImpl::ContextImpl(
     mojom::ContextRequest request,
     std::unique_ptr<shell::ServiceContextRef> connection_ref)
     : binding_(this, std::move(request)),
-      connection_ref_(std::move(connection_ref)) {}
+      connection_ref_(std::move(connection_ref)) {
+  rs_context_.reset(new rs::context);
+}
 
 ContextImpl::~ContextImpl() {
   DCHECK(thread_checker_.CalledOnValidThread());
@@ -21,9 +25,14 @@ ContextImpl::~ContextImpl() {
 void ContextImpl::GetDeviceCount(const GetDeviceCountCallback& callback) {
   DCHECK(thread_checker_.CalledOnValidThread());
   DLOG(INFO) << "LibRealsenseService: ContextImpl::GetDeviceCount()";
-  // TODO(leonhsl): Get real count from librealsense.
-  static int count = 0;
-  callback.Run(++count);
+
+  // static int count = 0;
+  // count++;
+  int count = rs_context_->get_device_count();
+  DLOG(INFO) << "LibRealsenseService: ContextImpl::GetDeviceCount(), rs "
+                "context get device count: "
+             << count;
+  callback.Run(count);
 }
 
 void ContextImpl::GetDevice(int index, mojom::DeviceRequest request) {
