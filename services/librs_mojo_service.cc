@@ -4,9 +4,24 @@
 
 #include "librs_mojo/services/librs_mojo_service.h"
 
+#include <librealsense/rscore.hpp>  // NOLINT
 #include <utility>
 
 #include "librs_mojo/services/librs_mojo_context_impl.h"
+
+namespace {
+
+void HandleRsError(rs_error* error) {
+  if (!error)
+    return;
+
+  DLOG(ERROR) << "HandleRsError(), Error message: "
+              << rs_get_error_message(error)
+              << " Failed function: " << rs_get_failed_function(error)
+              << " Failed args: " << rs_get_failed_args(error);
+  rs_free_error(error);
+}
+}
 
 namespace librs {
 
@@ -40,7 +55,18 @@ void MojoLibRealsenseService::Create(const shell::Identity& remote_identity,
                                      mojom::ContextRequest request) {
   DCHECK(thread_checker_.CalledOnValidThread());
   DLOG(INFO) << "LibRealsenseService: MojoLibRealsenseService::Create()";
-  new ContextImpl(std::move(request), ref_factory_.CreateRef());
+
+  rs_error* e = nullptr;
+  rs_context* rs_context_handle = rs_create_context(RS_API_VERSION, &e);
+  if (e) {
+    HandleRsError(e);
+    // |request| will destroy silently here, thus the underlying message pipe
+    // will be colsed and peer librs::client::Context will get a disconnection
+    // notification.
+  } else {
+    new ContextImpl(rs_context_handle, std::move(request),
+                    ref_factory_.CreateRef());
+  }
 }
 
 }  // namespace librs

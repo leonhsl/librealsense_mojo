@@ -13,15 +13,20 @@
 #include "mojo/public/cpp/bindings/strong_binding.h"
 #include "services/shell/public/cpp/service_context_ref.h"
 
-namespace rs {
-class context;
-}
+struct rs_context;
 
 namespace librs {
 
+// This implements mojom::Context interface and serves librs::client::Context.
+// This holds a rs_context instance |handle_| to call librealsense APIs,
+// and if any errors happened while calling librealsense APIs, we suppose
+// |handle_| has become invalid and can't be used anymore, so we will delete
+// self to close underlying message pipe then peer librs::client::Context will
+// get a disconnection notification.
 class ContextImpl : public mojom::Context {
  public:
-  ContextImpl(mojom::ContextRequest request,
+  ContextImpl(rs_context* rs_context_handle,
+              mojom::ContextRequest request,
               std::unique_ptr<shell::ServiceContextRef> connection_ref);
   ~ContextImpl() override;
 
@@ -30,7 +35,7 @@ class ContextImpl : public mojom::Context {
   void GetDeviceCount(const GetDeviceCountCallback& callback) override;
   void GetDevice(int index, mojom::DeviceRequest request) override;
 
-  std::unique_ptr<rs::context> rs_context_;
+  rs_context* handle_;
 
   mojo::StrongBinding<mojom::Context> binding_;
 
