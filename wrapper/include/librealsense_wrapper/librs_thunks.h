@@ -9,7 +9,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "librs_mojo/wrapper/librs_wrapper_export.h"
+#include "librs_wrapper_export.h"
 
 namespace librs {
 namespace wrapper {

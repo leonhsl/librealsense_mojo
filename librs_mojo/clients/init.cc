@@ -5,11 +5,11 @@
 #include "librs_mojo/clients/init.h"
 
 #include <functional>
+#include <librealsense_wrapper/librs_thunks.h>  // NOLINT
 #include <string>
 
 #include "librs_mojo/clients/lib/librs_mojo_context.h"
 #include "librs_mojo/clients/lib/librs_mojo_device.h"
-#include "librs_mojo/wrapper/librs_thunks.h"
 
 namespace librs {
 namespace client {

@@ -5,9 +5,9 @@
 #ifndef LIBRS_MOJO_WRAPPER_LIBRS_DEVICE_H_
 #define LIBRS_MOJO_WRAPPER_LIBRS_DEVICE_H_
 
-#include "librs_mojo/wrapper/librs_wrapper_export.h"
-
 #include <stdint.h>
+
+#include "librs_wrapper_export.h"
 
 namespace librs {
 namespace wrapper {

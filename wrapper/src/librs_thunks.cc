@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "librs_mojo/wrapper/librs_thunks.h"
+#include "../include/librealsense_wrapper/librs_thunks.h"
 
 #include <assert.h>
 
-#include "librs_mojo/wrapper/librs_thunks_api.h"
+#include "librs_thunks_api.h"
 
 namespace librs {
 namespace wrapper {
